@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jaquedoces - Loja de Doces</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="theme-toggle">
+      <button id="btn-light" onclick="mudarTema('light')" title="Clarear"><i class="fas fa-sun"></i> Clarear</button>
+      <button id="btn-dark" onclick="mudarTema('dark')" title="Escurecer"><i class="fas fa-moon"></i> Escurecer</button>
+    </div>
+
+    <h1>jaquedoces</h1>
+    <p>As melhores trufas artesanais da cidade</p>
+  </header>
+
+  <main>
+    <div class="products-grid" id="products-grid"></div>
+  </main>
+
+  <footer>
+    <div class="social-media">
+      <a href="#" class="social-icon tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+      <a href="#" class="social-icon instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="social-icon facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    </div>
+    <div class="credits">
+      desenvolvido por Gabriel Siqueira
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+  </script>
+</body>
+</html>
