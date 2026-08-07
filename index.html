@@ -79,14 +79,30 @@
         <h2><i class="fas fa-shopping-cart"></i> Seu Carrinho</h2>
         <span class="close-btn" onclick="fecharCarrinho()">&times;</span>
       </div>
-      <div class="modal-body" id="cart-items">
-        <p class="empty-cart-msg">Seu carrinho está vazio.</p>
+      <div class="modal-body">
+        <div id="cart-items">
+          <p class="empty-cart-msg">Seu carrinho está vazio.</p>
+        </div>
+
+        <div id="payment-section" class="payment-section" style="display: none;">
+          <h3><i class="fas fa-qrcode"></i> Pagamento via PIX</h3>
+          
+          <div class="payment-details">
+            <p><strong>Chave PIX:</strong></p>
+            <div class="pix-key-box">
+              <span id="pix-key">d19c986e-b2a5-4f30-a19f-05a02b7adb71</span>
+              <button type="button" onclick="copiarPix()"><i class="fas fa-copy"></i> Copiar</button>
+            </div>
+            <small>Efetue o pagamento e envie o comprovante após finalizar.</small>
+          </div>
+        </div>
+
       </div>
       <div class="modal-footer">
         <div class="cart-total">
           <strong>Total:</strong> <span id="cart-total-price">R$ 0,00</span>
         </div>
-        <button class="checkout-btn" onclick="finalizarPedido()">Finalizar Pedido</button>
+        <button class="checkout-btn" onclick="finalizarPedido()">Finalizar Pedido via PIX</button>
       </div>
     </div>
   </div>

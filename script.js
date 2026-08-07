@@ -131,6 +131,7 @@ function atualizarCarrinho() {
   const cartCount = document.getElementById('cart-count');
   const cartItemsContainer = document.getElementById('cart-items');
   const cartTotalPrice = document.getElementById('cart-total-price');
+  const paymentSection = document.getElementById('payment-section');
 
   const totalItens = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
   cartCount.textContent = totalItens;
@@ -138,8 +139,11 @@ function atualizarCarrinho() {
   if (carrinho.length === 0) {
     cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Seu carrinho está vazio.</p>';
     cartTotalPrice.textContent = 'R$ 0,00';
+    if (paymentSection) paymentSection.style.display = 'none';
     return;
   }
+
+  if (paymentSection) paymentSection.style.display = 'block';
 
   let total = 0;
   cartItemsContainer.innerHTML = carrinho.map(item => {
@@ -164,6 +168,13 @@ function atualizarCarrinho() {
   cartTotalPrice.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
 }
 
+// COPIAR CHAVE PIX
+function copiarPix() {
+  const chave = document.getElementById('pix-key').innerText;
+  navigator.clipboard.writeText(chave);
+  alert("Chave PIX copiada para a área de transferência!");
+}
+
 function abrirCarrinho() {
   document.getElementById('cart-modal').style.display = 'flex';
 }
@@ -177,7 +188,8 @@ function finalizarPedido() {
     alert("Seu carrinho está vazio!");
     return;
   }
-  alert("Pedido realizado com sucesso!");
+
+  alert("Pedido efetuado com sucesso! Realize a transferência PIX e envie o comprovante.");
   carrinho = [];
   atualizarCarrinho();
   fecharCarrinho();
