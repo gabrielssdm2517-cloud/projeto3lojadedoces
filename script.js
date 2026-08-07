@@ -1,22 +1,22 @@
 const trufas = [
-  { id: 1, nome: "Trufa de Prestígio", preco: "R$ 5,00", img: "imagem/prestigio.jpg" },
-  { id: 2, nome: "Trufa de Brigadeiro", preco: "R$ 5,00", img: "imagem/brigadeiro.jpg" },
-  { id: 3, nome: "Trufa de Maracujá", preco: "R$ 5,00", img: "imagem/maracuja.jpg" },
-  { id: 4, nome: "Trufa de Morango", preco: "R$ 5,00", img: "imagem/morango.jpg" },
-  { id: 5, nome: "Trufa de Limão", preco: "R$ 5,00", img: "imagem/limao.jpg" },
-  { id: 6, nome: "Trufa de Abacaxi", preco: "R$ 5,00", img: "imagem/abacaxi.jpg" },
-  { id: 7, nome: "Trufa de Ninho", preco: "R$ 5,00", img: "imagem/ninho.jpg" },
-  { id: 8, nome: "Trufa de Ninho com Nutella", preco: "R$ 5,00", img: "imagem/ninhonutella.jpg" },
-  { id: 9, nome: "Trufa de Laranja", preco: "R$ 5,00", img: "imagem/laranja.jpg" },
-  { id: 10, nome: "Trufa de Chocolate Branco", preco: "R$ 5,00", img: "imagem/chocolatebranco.jpg" },
-  { id: 11, nome: "Trufa de Paçoca", preco: "R$ 5,00", img: "imagem/paçoca.jpg" },
-  { id: 12, nome: "Trufa de Goiaba", preco: "R$ 5,00", img: "imagem/goiaba.jpg" },
-  { id: 13, nome: "Trufa de Ninho com Morango", preco: "R$ 5,00", img: "imagem/ninhomorango.jpg" },
-  { id: 14, nome: "Trufa de Oreo", preco: "R$ 5,00", img: "imagem/oreo.jpg" },
-  { id: 15, nome: "Trufa de Doce de Leite", preco: "R$ 5,00", img: "imagem/docedeleite.jpg" },
-  { id: 16, nome: "Trufa de Ferrero Rocher", preco: "R$ 5,00", img: "imagem/abacaxi.jpg" }
+  { id: 1, nome: "Trufa de Prestígio", preco: 5.00, img: "imagem/prestigio.jpg" },
+  { id: 2, nome: "Trufa de Brigadeiro", preco: 5.00, img: "imagem/brigadeiro.jpg" },
+  { id: 3, nome: "Trufa de Maracujá", preco: 5.00, img: "imagem/maracuja.jpg" },
+  { id: 4, nome: "Trufa de Morango", preco: 5.00, img: "imagem/morango.jpg" },
+  { id: 5, nome: "Trufa de Limão", preco: 5.00, img: "imagem/limao.jpg" },
+  { id: 6, nome: "Trufa de Abacaxi", preco: 5.00, img: "imagem/abacaxi.jpg" },
+  { id: 7, nome: "Trufa de Ninho", preco: 5.00, img: "imagem/ninho.jpg" },
+  { id: 8, nome: "Trufa de Ninho com Nutella", preco: 5.00, img: "imagem/ninhonutella.jpg" },
+  { id: 9, nome: "Trufa de Laranja", preco: 5.00, img: "imagem/laranja.jpg" },
+  { id: 10, nome: "Trufa de Oreo", preco: 5.00, img: "imagem/oreo.jpg" },
+  { id: 15, nome: "Trufa de Doce de Leite", preco: 5.00, img: "imagem/docedeleite.jpg" },
+  { id: 16, nome: "Trufa de Ferrero Rocher", preco: 5.00, img: "imagem/abacaxi.jpg" }
 ];
 
+let carrinho = [];
+let produtoSelecionado = null;
+
+// RENDERIZAR CARDS DOS PRODUTOS
 function renderProducts() {
   const container = document.getElementById('products-grid');
   if (!container) return;
@@ -26,35 +26,177 @@ function renderProducts() {
       <img src="${trufa.img}" alt="${trufa.nome}">
       <div class="card-content">
         <h2 class="card-title">${trufa.nome}</h2>
-        <div class="card-price">${trufa.preco}</div>
-        <button class="buy-btn" onclick="adicionarAoCarrinho('${trufa.nome}')">Comprar</button>
+        <div class="card-price">R$ ${trufa.preco.toFixed(2).replace('.', ',')}</div>
+        <button class="buy-btn" onclick="abrirOpcaoCompra(${trufa.id})">Comprar</button>
       </div>
     </div>
   `).join('');
 }
 
-function adicionarAoCarrinho(nome) {
-  alert(`Você adicionou "${nome}" ao carrinho!`);
+// POPUP DE SELEÇÃO DE QUANTIDADE
+function abrirOpcaoCompra(id) {
+  produtoSelecionado = trufas.find(item => item.id === id);
+  if (!produtoSelecionado) return;
+
+  document.getElementById('buy-title').innerText = produtoSelecionado.nome;
+  document.getElementById('buy-price').innerText = `R$ ${produtoSelecionado.preco.toFixed(2).replace('.', ',')}`;
+  document.getElementById('buy-quantity').value = 1;
+  atualizarSubtotalBuy();
+
+  document.getElementById('buy-modal').style.display = 'flex';
 }
 
-// LÓGICA PARA ALTERNAR TEMA (CLAREAR / ESCURECER)
+function fecharOpcaoCompra() {
+  document.getElementById('buy-modal').style.display = 'none';
+  produtoSelecionado = null;
+}
+
+function alterarQtdCompra(delta) {
+  const input = document.getElementById('buy-quantity');
+  let val = parseInt(input.value) || 1;
+  val += delta;
+  if (val < 1) val = 1;
+  input.value = val;
+  atualizarSubtotalBuy();
+}
+
+function validarEAtualizarQtdManual() {
+  const input = document.getElementById('buy-quantity');
+  let val = parseInt(input.value);
+  if (isNaN(val) || val < 1) {
+    input.value = 1;
+  }
+  atualizarSubtotalBuy();
+}
+
+function atualizarSubtotalBuy() {
+  if (!produtoSelecionado) return;
+  const input = document.getElementById('buy-quantity');
+  const qtd = parseInt(input.value) || 1;
+  const subtotal = produtoSelecionado.preco * qtd;
+  document.getElementById('buy-subtotal').innerText = `Subtotal: R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+}
+
+// ADICIONAR E CONFIRMAR NO CARRINHO
+function confirmarAdicaoAoCarrinho() {
+  if (!produtoSelecionado) return;
+
+  const input = document.getElementById('buy-quantity');
+  const qtd = parseInt(input.value) || 1;
+
+  const itemExistente = carrinho.find(item => item.id === produtoSelecionado.id);
+  if (itemExistente) {
+    itemExistente.quantidade += qtd;
+  } else {
+    carrinho.push({ ...produtoSelecionado, quantidade: qtd });
+  }
+
+  fecharOpcaoCompra();
+  atualizarCarrinho();
+  abrirCarrinho();
+}
+
+// LÓGICA DE GERENCIAMENTO DO CARRINHO
+function removerDoCarrinho(id) {
+  carrinho = carrinho.filter(item => item.id !== id);
+  atualizarCarrinho();
+}
+
+function alterarQuantidadeCarrinho(id, delta) {
+  const item = carrinho.find(item => item.id === id);
+  if (!item) return;
+
+  item.quantidade += delta;
+  if (item.quantidade <= 0) {
+    removerDoCarrinho(id);
+  } else {
+    atualizarCarrinho();
+  }
+}
+
+function alterarQuantidadeManualCarrinho(id, valor) {
+  const item = carrinho.find(item => item.id === id);
+  if (!item) return;
+
+  let val = parseInt(valor);
+  if (isNaN(val) || val <= 0) {
+    removerDoCarrinho(id);
+  } else {
+    item.quantidade = val;
+    atualizarCarrinho();
+  }
+}
+
+function atualizarCarrinho() {
+  const cartCount = document.getElementById('cart-count');
+  const cartItemsContainer = document.getElementById('cart-items');
+  const cartTotalPrice = document.getElementById('cart-total-price');
+
+  const totalItens = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
+  cartCount.textContent = totalItens;
+
+  if (carrinho.length === 0) {
+    cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Seu carrinho está vazio.</p>';
+    cartTotalPrice.textContent = 'R$ 0,00';
+    return;
+  }
+
+  let total = 0;
+  cartItemsContainer.innerHTML = carrinho.map(item => {
+    const subtotal = item.preco * item.quantidade;
+    total += subtotal;
+    return `
+      <div class="cart-item">
+        <div class="cart-item-info">
+          <strong>${item.nome}</strong>
+          <div>R$ ${item.preco.toFixed(2).replace('.', ',')} x ${item.quantidade} = <strong>R$ ${subtotal.toFixed(2).replace('.', ',')}</strong></div>
+        </div>
+        <div class="cart-item-controls">
+          <button onclick="alterarQuantidadeCarrinho(${item.id}, -1)">-</button>
+          <input type="number" min="1" value="${item.quantidade}" onchange="alterarQuantidadeManualCarrinho(${item.id}, this.value)">
+          <button onclick="alterarQuantidadeCarrinho(${item.id}, 1)">+</button>
+          <button class="remove-btn" onclick="removerDoCarrinho(${item.id})"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  cartTotalPrice.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+}
+
+function abrirCarrinho() {
+  document.getElementById('cart-modal').style.display = 'flex';
+}
+
+function fecharCarrinho() {
+  document.getElementById('cart-modal').style.display = 'none';
+}
+
+function finalizarPedido() {
+  if (carrinho.length === 0) {
+    alert("Seu carrinho está vazio!");
+    return;
+  }
+  alert("Pedido realizado com sucesso!");
+  carrinho = [];
+  atualizarCarrinho();
+  fecharCarrinho();
+}
+
 function mudarTema(tipo) {
   if (tipo === 'dark') {
     document.body.classList.add('dark-theme');
-    localStorage.setItem('tema', 'dark');
   } else {
     document.body.classList.remove('dark-theme');
-    localStorage.setItem('tema', 'light');
   }
 }
 
-// Carrega as configurações ao abrir a página
-document.addEventListener('DOMContentLoaded', () => {
-  renderProducts();
-  
-  // Verifica se havia um tema salvo anteriormente
-  const temaSalvo = localStorage.getItem('tema');
-  if (temaSalvo === 'dark') {
-    document.body.classList.add('dark-theme');
-  }
-});
+// FECHAR MODAIS CLICANDO FORA DELAS
+window.onclick = function(event) {
+  const buyModal = document.getElementById('buy-modal');
+  const cartModal = document.getElementById('cart-modal');
+  if (event.target === buyModal) fecharOpcaoCompra();
+  if (event.target === cartModal) fecharCarrinho();
+};
+
+document.addEventListener('DOMContentLoaded', renderProducts);

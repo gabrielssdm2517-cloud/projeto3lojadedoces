@@ -25,12 +25,21 @@
   <script>
     new window.VLibras.Widget('https://vlibras.gov.br/app');
   </script>
-  <header>
+
+  <div class="top-bar">
     <div class="theme-toggle">
       <button id="btn-light" onclick="mudarTema('light')" title="Clarear"><i class="fas fa-sun"></i> Clarear</button>
       <button id="btn-dark" onclick="mudarTema('dark')" title="Escurecer"><i class="fas fa-moon"></i> Escurecer</button>
     </div>
 
+    <button class="cart-btn" onclick="abrirCarrinho()" title="Ver Carrinho">
+      <i class="fas fa-shopping-cart"></i>
+      <span>Carrinho</span>
+      <span id="cart-count">0</span>
+    </button>
+  </div>
+
+  <header>
     <h1>jaquedoces</h1>
     <p>As melhores trufas artesanais da cidade</p>
   </header>
@@ -38,6 +47,49 @@
   <main>
     <div class="products-grid" id="products-grid"></div>
   </main>
+
+  <div id="buy-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="buy-title">Opções de Compra</h2>
+        <span class="close-btn" onclick="fecharOpcaoCompra()">&times;</span>
+      </div>
+      <div class="modal-body buy-options-body">
+        <p class="buy-unit-price">Preço unitário: <span id="buy-price">R$ 0,00</span></p>
+        <label for="buy-quantity">Escolha a quantidade:</label>
+        
+        <div class="quantity-selector">
+          <button type="button" class="qtd-btn" onclick="alterarQtdCompra(-1)">-</button>
+          <input type="number" id="buy-quantity" value="1" min="1" oninput="validarEAtualizarQtdManual()">
+          <button type="button" class="qtd-btn" onclick="alterarQtdCompra(1)">+</button>
+        </div>
+
+        <p class="buy-subtotal" id="buy-subtotal">Subtotal: R$ 0,00</p>
+      </div>
+      <div class="modal-footer">
+        <button class="cancel-btn" onclick="fecharOpcaoCompra()">Cancelar</button>
+        <button class="add-cart-btn" onclick="confirmarAdicaoAoCarrinho()"><i class="fas fa-cart-plus"></i> Adicionar ao Carrinho</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="cart-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-shopping-cart"></i> Seu Carrinho</h2>
+        <span class="close-btn" onclick="fecharCarrinho()">&times;</span>
+      </div>
+      <div class="modal-body" id="cart-items">
+        <p class="empty-cart-msg">Seu carrinho está vazio.</p>
+      </div>
+      <div class="modal-footer">
+        <div class="cart-total">
+          <strong>Total:</strong> <span id="cart-total-price">R$ 0,00</span>
+        </div>
+        <button class="checkout-btn" onclick="finalizarPedido()">Finalizar Pedido</button>
+      </div>
+    </div>
+  </div>
 
   <footer>
     <div class="social-media">
