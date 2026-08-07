@@ -15,6 +15,7 @@ const trufas = [
 
 let carrinho = [];
 let produtoSelecionado = null;
+let pedidoFinalizado = false;
 
 // RENDERIZAR CARDS DOS PRODUTOS
 function renderProducts() {
@@ -131,7 +132,6 @@ function atualizarCarrinho() {
   const cartCount = document.getElementById('cart-count');
   const cartItemsContainer = document.getElementById('cart-items');
   const cartTotalPrice = document.getElementById('cart-total-price');
-  const paymentSection = document.getElementById('payment-section');
 
   const totalItens = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
   cartCount.textContent = totalItens;
@@ -139,11 +139,9 @@ function atualizarCarrinho() {
   if (carrinho.length === 0) {
     cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Seu carrinho está vazio.</p>';
     cartTotalPrice.textContent = 'R$ 0,00';
-    if (paymentSection) paymentSection.style.display = 'none';
+    ocultarPix();
     return;
   }
-
-  if (paymentSection) paymentSection.style.display = 'block';
 
   let total = 0;
   cartItemsContainer.innerHTML = carrinho.map(item => {
@@ -170,9 +168,11 @@ function atualizarCarrinho() {
 
 // COPIAR CHAVE PIX
 function copiarPix() {
-  const chave = document.getElementById('pix-key').innerText;
-  navigator.clipboard.writeText(chave);
-  alert("Chave PIX copiada para a área de transferência!");
+  const inputPix = document.getElementById('pix-key');
+  inputPix.select();
+  inputPix.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(inputPix.value);
+  alert("Código PIX copiado para a área de transferência!");
 }
 
 function abrirCarrinho() {
@@ -181,18 +181,43 @@ function abrirCarrinho() {
 
 function fecharCarrinho() {
   document.getElementById('cart-modal').style.display = 'none';
+  if (pedidoFinalizado) {
+    carrinho = [];
+    pedidoFinalizado = false;
+    ocultarPix();
+    atualizarCarrinho();
+  }
 }
 
+// FINALIZAR PEDIDO E GERAR QRCODE PIX
 function finalizarPedido() {
   if (carrinho.length === 0) {
     alert("Seu carrinho está vazio!");
     return;
   }
 
-  alert("Pedido efetuado com sucesso! Realize a transferência PIX e envie o comprovante.");
-  carrinho = [];
-  atualizarCarrinho();
-  fecharCarrinho();
+  const pixKey = "d19c986e-b2a5-4f30-a19f-05a02b7adb71";
+  
+  const qrCodeImg = document.getElementById('pix-qrcode');
+  qrCodeImg.src = `https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${encodeURIComponent(pixKey)}`;
+
+  document.getElementById('payment-section').style.display = 'block';
+
+  pedidoFinalizado = true;
+  document.getElementById('checkout-btn').innerText = "Pedido Realizado com Sucesso!";
+  document.getElementById('checkout-btn').disabled = true;
+
+  alert("Pedido efetuado! Realize o pagamento escaneando o QR Code ou utilizando o PIX Copia e Cola.");
+}
+
+function ocultarPix() {
+  const paymentSection = document.getElementById('payment-section');
+  if (paymentSection) paymentSection.style.display = 'none';
+  const checkoutBtn = document.getElementById('checkout-btn');
+  if (checkoutBtn) {
+    checkoutBtn.innerText = "Finalizar Pedido via PIX";
+    checkoutBtn.disabled = false;
+  }
 }
 
 function mudarTema(tipo) {

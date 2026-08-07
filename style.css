@@ -388,37 +388,78 @@ main {
   background: #008f83;
 }
 
-/* --- SEÇÃO EXCLUSIVA DO PIX --- */
+.checkout-btn:disabled {
+  background: #888;
+  cursor: not-allowed;
+}
+
+/* --- SEÇÃO EXCLUSIVA DO PIX NO FINALIZAR --- */
 .payment-section {
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 2px dashed rgba(0,0,0,0.15);
+  text-align: center;
 }
 
 .payment-section h3 {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   margin-bottom: 0.8rem;
   color: var(--card-title);
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
 }
 
 .payment-details {
   background: rgba(0,0,0,0.03);
-  padding: 0.9rem;
+  padding: 1.2rem;
   border-radius: 8px;
+}
+
+.pix-instruction {
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+}
+
+.qrcode-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.qrcode-container img {
+  width: 180px;
+  height: 180px;
+  border: 4px solid var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.pix-copia-cola-title {
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
 }
 
 .pix-key-box {
   display: flex;
-  justify-content: space-between;
+  gap: 0.5rem;
   align-items: center;
   background: var(--card-bg);
-  padding: 0.6rem;
+  padding: 0.5rem;
   border: 1px solid rgba(0,0,0,0.15);
   border-radius: 6px;
-  margin: 0.5rem 0;
+  margin: 0.5rem 0 0.8rem 0;
+}
+
+.pix-key-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--card-text);
+  font-size: 0.85rem;
+  font-weight: bold;
+  outline: none;
 }
 
 .pix-key-box button {
@@ -429,6 +470,7 @@ main {
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 .pix-key-box button:hover {
