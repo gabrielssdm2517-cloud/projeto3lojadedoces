@@ -1,6 +1,7 @@
 /* --- VARIÁVEIS DE CORES (TEMA CLARO DEFAULT) --- */
 :root {
   --bg-color: #fce4ec;
+  --bg-pattern: radial-gradient(#f8bbd0 15%, transparent 16%), radial-gradient(#f48fb1 15%, transparent 16%);
   --header-bg: #8e24aa;
   --header-text: #ffffff;
   --card-bg: #ffffff;
@@ -16,6 +17,7 @@
 /* --- TEMA ESCURO --- */
 body.dark-theme {
   --bg-color: #121212;
+  --bg-pattern: radial-gradient(rgba(171, 71, 188, 0.15) 15%, transparent 16%), radial-gradient(rgba(233, 30, 99, 0.1) 15%, transparent 16%);
   --header-bg: #1f1f1f;
   --header-text: #f3e5f5;
   --card-bg: #1e1e1e;
@@ -28,7 +30,7 @@ body.dark-theme {
   --footer-text: #e0e0e0;
 }
 
-/* --- RESET E ESTILOS GERAIS --- */
+/* --- ESTILOS GERAIS --- */
 * {
   margin: 0;
   padding: 0;
@@ -38,11 +40,18 @@ body.dark-theme {
 
 body {
   background-color: var(--bg-color);
+  /* Fundo decorado com gradiente suave + padrão delicado estilo confeitos */
+  background-image: 
+    var(--bg-pattern),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(248, 187, 208, 0.2) 100%);
+  background-position: 0 0, 25px 25px, 0 0;
+  background-size: 50px 50px, 50px 50px, 100% 100%;
+  background-attachment: fixed;
   color: var(--card-text);
+  transition: background-color 0.4s ease, color 0.4s ease;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* --- CABEÇALHO --- */
@@ -50,111 +59,107 @@ header {
   background-color: var(--header-bg);
   color: var(--header-text);
   text-align: center;
-  padding: 2rem 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  padding: 2.5rem 1rem 2rem 1rem;
   position: relative;
-  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 header h1 {
-  font-family: 'Caveat', 'Pacifico', cursive;
-  font-size: 4.5rem;
-  font-weight: 700;
+  font-family: 'Pacifico', cursive;
+  font-size: 3rem;
+  margin-bottom: 0.3rem;
   letter-spacing: 1px;
-  text-transform: lowercase;
-  line-height: 1;
 }
 
 header p {
-  font-size: 1.3rem;
-  margin-top: 0.5rem;
+  font-family: 'Caveat', cursive;
+  font-size: 1.6rem;
   opacity: 0.9;
 }
 
-/* --- BOTÕES DE CLAREAR E ESCURECER --- */
+/* --- BOTAO DE TEMAS --- */
 .theme-toggle {
   position: absolute;
-  top: 15px;
-  right: 20px;
+  top: 1rem;
+  right: 1rem;
   display: flex;
-  gap: 10px;
+  gap: 0.5rem;
 }
 
 .theme-toggle button {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: var(--header-text);
+  background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
   cursor: pointer;
   font-size: 0.9rem;
-  font-weight: bold;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 0.3rem;
   transition: all 0.3s ease;
 }
 
 .theme-toggle button:hover {
-  background-color: rgba(255, 255, 255, 0.4);
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
 }
 
-/* --- CONTEÚDO PRINCIPAL / GRID --- */
+/* --- CORPO PRINCIPAL E GRID --- */
 main {
   flex: 1;
   max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
   width: 100%;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
 }
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2rem;
 }
 
-/* --- CARD DE PRODUTO --- */
+/* --- CARDS DOS PRODUTOS --- */
 .card {
   background-color: var(--card-bg);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
 }
 
 .card img {
   width: 100%;
-  height: 180px;
+  height: 200px;
   object-fit: cover;
 }
 
 .card-content {
-  padding: 1rem;
-  text-align: center;
-  flex-grow: 1;
+  padding: 1.2rem;
   display: flex;
   flex-direction: column;
+  flex: 1;
   justify-content: space-between;
 }
 
 .card-title {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: var(--card-title);
   margin-bottom: 0.5rem;
 }
 
 .card-price {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
+  font-weight: bold;
   color: var(--card-price);
   margin-bottom: 1rem;
 }
@@ -167,11 +172,14 @@ main {
   border-radius: 6px;
   cursor: pointer;
   font-size: 1.1rem;
-  transition: background-color 0.2s ease;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  width: 100%;
 }
 
 .buy-btn:hover {
   background-color: var(--btn-hover);
+  transform: scale(1.02);
 }
 
 /* --- RODAPÉ --- */
@@ -181,7 +189,7 @@ footer {
   text-align: center;
   padding: 2rem 1rem;
   margin-top: 3rem;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.4s ease;
 }
 
 .social-media {
@@ -193,12 +201,12 @@ footer {
 
 .social-icon {
   color: var(--footer-text);
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   text-decoration: none;
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -206,37 +214,24 @@ footer {
 }
 
 .social-icon:hover {
-  transform: translateY(-5px) scale(1.1);
+  background-color: var(--card-price);
+  transform: translateY(-4px) scale(1.1);
 }
 
 .credits {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   opacity: 0.8;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 1rem;
-  max-width: 400px;
-  margin: 0 auto;
 }
 
 /* --- RESPONSIVIDADE --- */
-@media (max-width: 992px) {
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 2.3rem;
   }
-}
-
-@media (max-width: 576px) {
+  
   .theme-toggle {
     position: static;
     justify-content: center;
     margin-bottom: 1rem;
   }
-  .products-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* --- SOBREPOSIÇÃO VLIBRAS --- */
-[vw] {
-  z-index: 999999 !important;
 }

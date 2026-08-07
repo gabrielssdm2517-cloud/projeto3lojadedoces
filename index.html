@@ -15,6 +15,16 @@
 </head>
 <body>
 
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+  </script>
   <header>
     <div class="theme-toggle">
       <button id="btn-light" onclick="mudarTema('light')" title="Clarear"><i class="fas fa-sun"></i> Clarear</button>
@@ -31,9 +41,15 @@
 
   <footer>
     <div class="social-media">
-      <a href="#" class="social-icon tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-      <a href="#" class="social-icon instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="#" class="social-icon facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.tiktok.com/@jaquelinetaila?_r=1&_t=ZS-98hCdjyIsj4" target="_blank" rel="noopener noreferrer" class="social-icon tiktok" aria-label="TikTok">
+        <i class="fab fa-tiktok"></i>
+      </a>
+      <a href="https://www.instagram.com/jaquedoces35?utm_source=qr&igsh=aTlvOG41ZDl0djkw" target="_blank" rel="noopener noreferrer" class="social-icon instagram" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://www.facebook.com/share/1Pdi9wPCJV/" target="_blank" rel="noopener noreferrer" class="social-icon facebook" aria-label="Facebook">
+        <i class="fab fa-facebook-f"></i>
+      </a>
     </div>
     <div class="credits">
       desenvolvido por Gabriel Siqueira
@@ -41,16 +57,5 @@
   </footer>
 
   <script src="script.js"></script>
-
-  <div vw class="enabled">
-    <div vw-access-button class="active"></div>
-    <div vw-plugin-wrapper>
-      <div class="vw-plugin-top-wrapper"></div>
-    </div>
-  </div>
-  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-  <script>
-    new window.VLibras.Widget('https://vlibras.gov.br/app');
-  </script>
 </body>
 </html>
