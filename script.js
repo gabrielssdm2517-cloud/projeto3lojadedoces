@@ -128,6 +128,10 @@ function alterarQuantidadeManualCarrinho(id, valor) {
   }
 }
 
+function calcularTotalCarrinho() {
+  return carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+}
+
 function atualizarCarrinho() {
   const cartCount = document.getElementById('cart-count');
   const cartItemsContainer = document.getElementById('cart-items');
@@ -143,10 +147,9 @@ function atualizarCarrinho() {
     return;
   }
 
-  let total = 0;
+  let total = calcularTotalCarrinho();
   cartItemsContainer.innerHTML = carrinho.map(item => {
     const subtotal = item.preco * item.quantidade;
-    total += subtotal;
     return `
       <div class="cart-item">
         <div class="cart-item-info">
@@ -166,13 +169,86 @@ function atualizarCarrinho() {
   cartTotalPrice.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
 }
 
-// COPIAR CHAVE PIX
+// --- GERADOR DE PAYLOAD PIX OFICIAL (BR CODE / EMV) ---
+function gerarPayloadPix(chave, nomeRecebedor, cidadeRecebedor, valorTotal, txtId = '***') {
+  function formatarTag(id, valor) {
+    const len = String(valor.length).padStart(2, '0');
+    return `${id}${len}${valor}`;
+  }
+
+  // Tag 26: Merchant Account Info (GUI Pix + Chave Pix)
+  const gui = formatarTag('00', 'br.gov.bcb.pix');
+  const chaveTag = formatarTag('01', chave);
+  const merchantAccountInfo = formatarTag('26', gui + chaveTag);
+
+  const payloadFormat = formatarTag('00', '01');
+  const merchantCategory = formatarTag('52', '0000');
+  const currency = formatarTag('53', '986'); // BRL
+  const transactionAmount = valorTotal > 0 ? formatarTag('54', valorTotal.toFixed(2)) : '';
+  const countryCode = formatarTag('58', 'BR');
+  const merchantName = formatarTag('59', nomeRecebedor.normalize("NFD").replace(/[\u0300-\u036f]/g, "").substring(0, 25));
+  const merchantCity = formatarTag('60', cidadeRecebedor.normalize("NFD").replace(/[\u0300-\u036f]/g, "").substring(0, 15));
+  
+  const additionalData = formatarTag('62', formatarTag('05', txtId));
+
+  let payload = `${payloadFormat}${merchantAccountInfo}${merchantCategory}${currency}${transactionAmount}${countryCode}${merchantName}${merchantCity}${additionalData}6304`;
+
+  // Cálculo de Checksum CRC16-CCITT (0xFFFF)
+  let crc = 0xFFFF;
+  for (let i = 0; i < payload.length; i++) {
+    crc ^= (payload.charCodeAt(i) << 8);
+    for (let j = 0; j < 8; j++) {
+      if ((crc & 0x8000) !== 0) {
+        crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
+      } else {
+        crc = (crc << 1) & 0xFFFF;
+      }
+    }
+  }
+
+  const crcHex = crc.toString(16).toUpperCase().padStart(4, '0');
+  return payload + crcHex;
+}
+
+// FINALIZAR PEDIDO E GERAR QR CODE VÁLIDO
+function finalizarPedido() {
+  if (carrinho.length === 0) {
+    alert("Seu carrinho está vazio!");
+    return;
+  }
+
+  const chavePix = "d19c986e-b2a5-4f30-a19f-05a02b7adb71";
+  const nomeRecebedor = "JAQUE DOCES";
+  const cidade = "SAO PAULO";
+  const valorTotal = calcularTotalCarrinho();
+
+  // Gera o código PIX Copia e Cola válido conforme padrão do Banco Central
+  const pixPayloadValid = gerarPayloadPix(chavePix, nomeRecebedor, cidade, valorTotal);
+
+  // Atualiza a caixa de texto Pix Copia e Cola
+  const inputPix = document.getElementById('pix-key');
+  inputPix.value = pixPayloadValid;
+
+  // Gera o QR Code com o Payload Pix Oficial
+  const qrCodeImg = document.getElementById('pix-qrcode');
+  qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(pixPayloadValid)}`;
+
+  document.getElementById('payment-section').style.display = 'block';
+
+  pedidoFinalizado = true;
+  document.getElementById('checkout-btn').innerText = "Pedido Realizado com Sucesso!";
+  document.getElementById('checkout-btn').disabled = true;
+
+  alert("Pedido gerado! Escaneie o QR Code abaixo no seu aplicativo de banco ou use o PIX Copia e Cola.");
+}
+
+// COPIAR CÓDIGO PIX COPIA E COLA
 function copiarPix() {
   const inputPix = document.getElementById('pix-key');
   inputPix.select();
   inputPix.setSelectionRange(0, 99999);
   navigator.clipboard.writeText(inputPix.value);
-  alert("Código PIX copiado para a área de transferência!");
+  alert("Código PIX Copia e Cola copiado com sucesso! Cole diretamente no seu aplicativo bancário.");
 }
 
 function abrirCarrinho() {
@@ -187,27 +263,6 @@ function fecharCarrinho() {
     ocultarPix();
     atualizarCarrinho();
   }
-}
-
-// FINALIZAR PEDIDO E GERAR QRCODE PIX
-function finalizarPedido() {
-  if (carrinho.length === 0) {
-    alert("Seu carrinho está vazio!");
-    return;
-  }
-
-  const pixKey = "d19c986e-b2a5-4f30-a19f-05a02b7adb71";
-  
-  const qrCodeImg = document.getElementById('pix-qrcode');
-  qrCodeImg.src = `https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${encodeURIComponent(pixKey)}`;
-
-  document.getElementById('payment-section').style.display = 'block';
-
-  pedidoFinalizado = true;
-  document.getElementById('checkout-btn').innerText = "Pedido Realizado com Sucesso!";
-  document.getElementById('checkout-btn').disabled = true;
-
-  alert("Pedido efetuado! Realize o pagamento escaneando o QR Code ou utilizando o PIX Copia e Cola.");
 }
 
 function ocultarPix() {
@@ -228,7 +283,6 @@ function mudarTema(tipo) {
   }
 }
 
-// FECHAR MODAIS CLICANDO FORA DELAS
 window.onclick = function(event) {
   const buyModal = document.getElementById('buy-modal');
   const cartModal = document.getElementById('cart-modal');
